@@ -1,11 +1,12 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
+
 import HeroSection from './components/HeroSection';
 import Footer from './components/Footer';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import CodeGeneration from './components/CodeGeneration';
+import CodeGeneration from './pages/CodeGeneration';
 
 const ProtectedRoute = ({ isAllowed, children }) => {
   return isAllowed ? children : <Navigate to="/" replace />;
