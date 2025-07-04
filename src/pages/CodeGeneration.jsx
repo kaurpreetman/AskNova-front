@@ -23,6 +23,7 @@ const CodeGeneration = () => {
   const [initiated, setInitiated] = useState(false);
   const [userId, setUserId] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [userSessions, setUserSessions] = useState([]);
 useEffect(() => {
   if (socket && userId) {
     socket.emit('get-sessions', { userId });
