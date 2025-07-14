@@ -8,17 +8,18 @@ export const useAuth = () => {
   return context;
 };
 
-// AuthContext.js
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    const stored = localStorage.getItem('isAuthenticated');
-    return stored === 'true';
+    return localStorage.getItem('isAuthenticated') === 'true';
   });
- const [user, setUser] = useState(() => {
+
+  const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem('user');
     return storedUser ? JSON.parse(storedUser) : null;
   });
-  const [isLoading, setIsLoading] = useState(true); // Add this
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [loggingIn, setLoggingIn] = useState(false);
 
   useEffect(() => {
     fetch('https://asknova-host.onrender.com/auth/me', {
@@ -29,16 +30,13 @@ export const AuthProvider = ({ children }) => {
         return res.json();
       })
       .then(data => {
-        if (data && data._id) {
+        if (data && data.user && data.user._id) {
           setIsAuthenticated(true);
-          setUser(data);
+          setUser(data.user);
           localStorage.setItem('isAuthenticated', 'true');
-          localStorage.setItem('user', JSON.stringify(data));
+          localStorage.setItem('user', JSON.stringify(data.user));
         } else {
-          setIsAuthenticated(false);
-          setUser(null);
-          localStorage.removeItem('isAuthenticated');
-          localStorage.removeItem('user');
+          throw new Error('User not valid');
         }
       })
       .catch(() => {
@@ -51,6 +49,8 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = () => {
+    if (loggingIn) return;
+    setLoggingIn(true);
     window.location.href = 'https://asknova-host.onrender.com/auth/github';
   };
 
@@ -62,6 +62,7 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(false);
       setUser(null);
       localStorage.removeItem('user');
+      localStorage.removeItem('isAuthenticated');
     });
   };
 

@@ -1,18 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import HeroIllustration from '../components/HeroIllustration';
 import { Send } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'; 
+import { useAuth } from '../context/AuthContext';
 
 const HeroSection = () => {
   const navigate = useNavigate();
   const { isAuthenticated, login } = useAuth();
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const handleStartGenerating = () => {
     if (isAuthenticated) {
       navigate('/generate');
     } else {
-      login(); 
+      if (!isLoggingIn) {
+        setIsLoggingIn(true);
+        login();
+      }
     }
   };
 
@@ -36,9 +40,10 @@ const HeroSection = () => {
             <button
               type="button"
               onClick={handleStartGenerating}
-              className="flex items-center px-6 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105"
+              disabled={isLoggingIn}
+              className="flex items-center px-6 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105 disabled:opacity-50"
             >
-              <span>Start Generating</span>
+              <span>{isLoggingIn ? 'Redirecting...' : 'Start Generating'}</span>
               <Send size={20} className="ml-2" />
             </button>
 
