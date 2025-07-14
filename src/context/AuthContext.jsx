@@ -1,6 +1,6 @@
 // context/AuthContext.jsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext(null);
 
@@ -12,16 +12,10 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return localStorage.getItem('isAuthenticated') === 'true';
-  });
-
-  const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser) : null;
-  });
-
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loggingIn, setLoggingIn] = useState(false);
 
@@ -55,13 +49,13 @@ export const AuthProvider = ({ children }) => {
     };
 
     checkAuth();
-  }, [location.pathname]); 
+  }, [location.pathname]);
 
   const login = () => {
     if (loggingIn) return;
     setLoggingIn(true);
-  
-    sessionStorage.setItem('postLoginRedirect', location.pathname);
+
+    sessionStorage.setItem('postLoginRedirect', '/generate'); // or location.pathname
     window.location.href = 'https://asknova-host.onrender.com/auth/github';
   };
 
@@ -77,16 +71,15 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
-
   useEffect(() => {
-    if (isAuthenticated) {
+    if (!isLoading && isAuthenticated) {
       const redirectPath = sessionStorage.getItem('postLoginRedirect');
       if (redirectPath) {
         sessionStorage.removeItem('postLoginRedirect');
-        window.history.replaceState({}, '', redirectPath); 
+        navigate(redirectPath, { replace: true });
       }
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isLoading, navigate]);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, isLoading, user, login, logout }}>

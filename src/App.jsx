@@ -1,7 +1,7 @@
+// App.jsx
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
-
 import HeroSection from './pages/HeroSection';
 import Footer from './components/Footer';
 import { ThemeProvider } from './context/ThemeContext';
@@ -17,7 +17,7 @@ const AppContent = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-dark-900 theme-transition">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900">
         <div className="text-center">
           <div className="relative">
             <div className="w-20 h-20 border-4 border-primary-200 dark:border-primary-800 border-t-primary-600 dark:border-t-primary-400 rounded-full animate-spin mx-auto mb-6"></div>
@@ -26,8 +26,7 @@ const AppContent = () => {
               style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}
             ></div>
           </div>
-          <p className="text-xl text-gray-600 dark:text-gray-400 font-medium">Loading your experience...</p>
-          <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">Please wait while we prepare everything for you</p>
+          <p className="text-xl text-gray-600 dark:text-gray-300 font-medium">Loading your experience...</p>
         </div>
       </div>
     );
@@ -54,7 +53,7 @@ const AppContent = () => {
   );
 };
 
-function App() {
+export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
@@ -65,5 +64,3 @@ function App() {
     </BrowserRouter>
   );
 }
-
-export default App;
