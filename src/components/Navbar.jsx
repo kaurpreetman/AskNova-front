@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
-  const { isAuthenticated, user, login, logout } = useAuth();
+  const { isAuthenticated, user, login, logout,isLoading } = useAuth();
    
   return (
     <nav className="sticky top-0 z-10 backdrop-blur-md bg-white/70 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
@@ -30,7 +30,7 @@ const Navbar = () => {
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </button>
 
-            {isAuthenticated ? (
+            {!isLoading && isAuthenticated ? (
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
                   <img

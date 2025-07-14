@@ -6,19 +6,17 @@ import { useAuth } from '../context/AuthContext';
 
 const HeroSection = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, login } = useAuth();
+  const { isAuthenticated, login ,isLoading} = useAuth();
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  const handleStartGenerating = () => {
-    if (isAuthenticated) {
-      navigate('/generate');
-    } else {
-      if (!isLoggingIn) {
-        setIsLoggingIn(true);
-        login();
-      }
-    }
-  };
+const handleStartGenerating = () => {
+  if (isAuthenticated) {
+    navigate('/generate');
+  } else {
+ 
+    login();
+  }
+};
 
   return (
     <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
@@ -40,10 +38,10 @@ const HeroSection = () => {
             <button
               type="button"
               onClick={handleStartGenerating}
-              disabled={isLoggingIn}
+             disabled={isLoading}
               className="flex items-center px-6 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105 disabled:opacity-50"
             >
-              <span>{isLoggingIn ? 'Redirecting...' : 'Start Generating'}</span>
+              <span>{isLoading ? 'Redirecting...' : 'Start Generating'}</span>
               <Send size={20} className="ml-2" />
             </button>
 
