@@ -1,7 +1,8 @@
+// context/AuthContext.jsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-const AuthContext = createContext(null); // Always initialize with null for safety
+const AuthContext = createContext(null);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -10,7 +11,7 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const location = useLocation(); // ✅ Moved inside the component
+  const location = useLocation();
 
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem('isAuthenticated') === 'true';
@@ -32,17 +33,18 @@ export const AuthProvider = ({ children }) => {
           credentials: 'include',
         });
 
-        if (!res.ok) throw new Error();
+        if (!res.ok) throw new Error('Not authenticated');
         const data = await res.json();
+
         if (data?.user?._id) {
           setIsAuthenticated(true);
           setUser(data.user);
           localStorage.setItem('isAuthenticated', 'true');
           localStorage.setItem('user', JSON.stringify(data.user));
         } else {
-          throw new Error();
+          throw new Error('Invalid user');
         }
-      } catch {
+      } catch (err) {
         setIsAuthenticated(false);
         setUser(null);
         localStorage.removeItem('isAuthenticated');
@@ -53,11 +55,13 @@ export const AuthProvider = ({ children }) => {
     };
 
     checkAuth();
-  }, [location.pathname]);
+  }, [location.pathname]); 
 
   const login = () => {
     if (loggingIn) return;
     setLoggingIn(true);
+  
+    sessionStorage.setItem('postLoginRedirect', location.pathname);
     window.location.href = 'https://asknova-host.onrender.com/auth/github';
   };
 
@@ -72,6 +76,17 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem('isAuthenticated');
     });
   };
+
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const redirectPath = sessionStorage.getItem('postLoginRedirect');
+      if (redirectPath) {
+        sessionStorage.removeItem('postLoginRedirect');
+        window.history.replaceState({}, '', redirectPath); 
+      }
+    }
+  }, [isAuthenticated]);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, isLoading, user, login, logout }}>

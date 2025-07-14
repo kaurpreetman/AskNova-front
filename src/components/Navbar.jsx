@@ -1,3 +1,4 @@
+// components/Navbar.jsx
 import React from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
@@ -6,8 +7,8 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
-  const { isAuthenticated, user, login, logout,isLoading } = useAuth();
-   
+  const { isAuthenticated, isLoading, user, login, logout } = useAuth();
+
   return (
     <nav className="sticky top-0 z-10 backdrop-blur-md bg-white/70 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -25,7 +26,7 @@ const Navbar = () => {
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full text-slate-600 hover:text-purple-600 dark:text-slate-300 dark:hover:text-purple-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors duration-200"
-              aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+              aria-label="Toggle Theme"
             >
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </button>
@@ -51,13 +52,15 @@ const Navbar = () => {
                 </button>
               </div>
             ) : (
-              <button
-                onClick={login}
-                className="flex items-center px-4 py-2 rounded-lg bg-slate-800 text-white hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 transition-colors duration-200 text-sm font-medium"
-              >
-                <Github size={18} className="mr-2" />
-                <span>Login with GitHub</span>
-              </button>
+              !isLoading && (
+                <button
+                  onClick={login}
+                  className="flex items-center px-4 py-2 rounded-lg bg-slate-800 text-white hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 transition-colors duration-200 text-sm font-medium"
+                >
+                  <Github size={18} className="mr-2" />
+                  <span>Login with GitHub</span>
+                </button>
+              )
             )}
           </div>
         </div>
